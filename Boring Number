@@ -1,0 +1,79 @@
+#include <bits/stdc++.h>
+using namespace std;
+#define ll long long 
+#define pb push_back
+#define popb pop_back
+#define ff first
+#define ss second
+#define CASE(x,val) cout<<"Case #"<<x<<": "<<val;
+
+ll dp[20][2][2][2];
+
+// n : digit, even : currpos, leading : leading zeros? ,tight
+ll solve(string num,int n,bool even,bool leading,bool tight){
+	if(n == 0)
+		return 1;
+
+	// if(dp[n][even][leading][tight] != -1)
+	// 	return dp[n][even][leading][tight];
+
+	if(!even){
+		// case of odd
+		// odd mein ya toh number chalta aa rha ho ya leading he na khtm ho rha ho
+		ll answer = 0;
+		if(leading==1)
+			answer += solve(num,n-1,0,1,0);
+
+		vector<int> odd = {1,3,5,7,9};
+		int ub = tight==1 ? num[num.length()-n]-'0' : 9;
+		
+		for(int dig : odd){
+			if(dig <= ub){
+				answer += solve(num,n-1,1,0,(tight&(ub==dig)));
+			}
+		}
+		return dp[n][even][leading][tight] = answer;
+	}
+	else{
+
+		vector<int> en = {0,2,4,6,8};
+		int ub = tight==1 ? num[num.length()-n]-'0' : 9;
+		ll answer = 0;
+		for(int dig : en){
+			if(dig <= ub){
+				answer += solve(num,n-1,0,0,(tight&(ub==dig)));
+			}
+		}
+		return dp[n][even][leading][tight] = answer;
+	}
+}
+
+int main(){
+
+    ios_base::sync_with_stdio(false);
+    cin.tie(NULL); cout.tie(NULL);
+    #ifndef ONLINE_JUDGE
+        freopen("input.txt","r",stdin);
+        freopen("output.txt","w",stdout);
+    #endif
+
+   	int t;
+   	cin>>t;
+   	int cnt = 0;
+   	while(t--){
+   		ll L,R;
+   		cin>>L>>R;
+   		L--;
+
+   		string l = to_string(L), r = to_string(R);
+   		memset(dp,-1,sizeof dp);
+   		ll rans = solve(r,r.length(),0,1,1);
+   		memset(dp,-1,sizeof dp);
+   		ll lans = solve(l,l.length(),0,1,1);
+   		CASE(++cnt,rans-lans);
+   		cout<<endl;
+   	}
+
+
+ return 0;       
+}
