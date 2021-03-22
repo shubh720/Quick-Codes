@@ -1,0 +1,25 @@
+#include <cstring>
+
+int dp[100002];
+
+int solve(int arr[], int n){
+	  if(n==0)
+        return 0;
+     
+     if(dp[n]!=-1)
+        return dp[n];
+        
+    // either he will loot current house or he want
+    // loot
+    int loot = arr[n-1] + solve(arr,n-2);
+    
+    // declines to loot
+    int noloot = solve(arr,n-1);
+    
+  return dp[n] = max(loot,noloot);
+}
+
+int maxMoneyLooted(int arr[], int n){
+	memset(dp,-1,sizeof dp);
+  return solve(arr,n);
+}
